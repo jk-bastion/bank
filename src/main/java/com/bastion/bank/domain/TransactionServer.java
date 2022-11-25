@@ -1,64 +1,59 @@
 package com.bastion.bank.domain;
 
-import com.google.inject.Inject;
-import com.rev.common.ErrorsCode;
-import com.rev.common.TransactionStatus;
-import com.rev.common.exception.AccountNotExistsException;
-import com.rev.common.exception.InvalidCurrencyException;
-import com.rev.common.exception.NotEnoughBalanceException;
-import com.rev.dao.AccountDao;
-import com.rev.dao.TransactionDao;
-import com.rev.dto.TransactionDto;
-import com.rev.repository.AccountRepository;
-import com.rev.repository.AccountRepositoryImpl;
-import com.rev.repository.TransactionRepository;
-import com.rev.repository.TransactionRepositoryImpl;
+import com.bastion.bank.application.dto.TransactionDto;
+import com.bastion.bank.domain.exception.AccountNotExistsException;
+import com.bastion.bank.domain.exception.InvalidCurrencyException;
+import com.bastion.bank.domain.exception.NotEnoughBalanceException;
+import com.bastion.bank.domain.model.ErrorsCode;
+import com.bastion.bank.domain.model.TransactionStatus;
+import com.bastion.bank.infrustructure.repository.AccountRepository;
+import com.bastion.bank.infrustructure.repository.TransactionRepository;
+import com.bastion.bank.infrustructure.repository.model.AccountEntity;
+import com.bastion.bank.infrustructure.repository.model.TransactionEntity;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.rev.common.ErrorsCode.*;
+import static com.bastion.bank.domain.model.ErrorsCode.*;
 
+@Service
+@AllArgsConstructor
 public class TransactionServer {
 
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
 
-    @Inject
-    public TransactionServer(TransactionRepositoryImpl transactionRepository, AccountRepositoryImpl accountRepository) {
-        this.transactionRepository = transactionRepository;
-        this.accountRepository = accountRepository;
-    }
-
     public void addTransaction(final TransactionDto transactionDto) throws Exception {
 
-        AccountDao accountFrom = getAndValidateAccount(transactionDto.getFromAccountId(), SRC_ACCOUNT_NOT_EXISTS);
-        AccountDao accountTo = getAndValidateAccount(transactionDto.getToAccountId(), DES_ACCOUNT_NOT_EXISTS);
+        AccountEntity accountFrom = getAndValidateAccount(transactionDto.getFromAccountId(), SRC_ACCOUNT_NOT_EXISTS);
+        AccountEntity accountTo = getAndValidateAccount(transactionDto.getToAccountId(), DES_ACCOUNT_NOT_EXISTS);
 
         if (!(accountFrom.getCurrencyCode().equals(transactionDto.getCurrencyCode()) && accountTo.getCurrencyCode().equals(accountFrom.getCurrencyCode()))) {
-            transactionRepository.addTransaction(getTransactionDao(transactionDto, INVALID_CURRENCY.getMessage(), TransactionStatus.FAILED));
+            transactionRepository.addTransaction(getTransactionEntity(transactionDto, INVALID_CURRENCY.getMessage(), TransactionStatus.FAILED));
             throw new InvalidCurrencyException(INVALID_CURRENCY.getMessage());
         }
 
         if (!(accountFrom.getBalance().compareTo(transactionDto.getAmount()) >= 0)) {
-            transactionRepository.addTransaction(accountFrom, accountTo, getTransactionDao(transactionDto, NOT_ENOUGH_BALANCE.getMessage(), TransactionStatus.FAILED));
+            transactionRepository.addTransaction(accountFrom, accountTo, getTransactionEntity(transactionDto, NOT_ENOUGH_BALANCE.getMessage(), TransactionStatus.FAILED));
             throw new NotEnoughBalanceException(NOT_ENOUGH_BALANCE.getMessage());
         }
-        TransactionDao transactionDao = transactionRepository.addTransaction(accountFrom, accountTo, getTransactionDao(transactionDto, "", TransactionStatus.SUCCESS));
+        TransactionEntity TransactionEntity = transactionRepository.addTransaction(accountFrom, accountTo, getTransactionEntity(transactionDto, "", TransactionStatus.SUCCESS));
 
-        if (transactionDao.getTransactionId() == null) {
-            if (NOT_ENOUGH_BALANCE.getMessage().equals(transactionDao.getMessage())) {
-                transactionDao.setMessage(UNEXPECTED_ERROR.getMessage());
-                transactionDao.setStatus(TransactionStatus.FAILED);
+        if (TransactionEntity.getTransactionId() == null) {
+            if (NOT_ENOUGH_BALANCE.getMessage().equals(TransactionEntity.getMessage())) {
+                TransactionEntity.setMessage(UNEXPECTED_ERROR.getMessage());
+                TransactionEntity.setStatus(TransactionStatus.FAILED);
             }
-            transactionRepository.addTransaction(transactionDao);
+            transactionRepository.addTransaction(TransactionEntity);
         }
     }
 
-    private TransactionDao getTransactionDao(TransactionDto transactionDto,  String message, TransactionStatus status) {
-        return TransactionDao.builder()
+    private TransactionEntity getTransactionEntity(TransactionDto transactionDto,  String message, TransactionStatus status) {
+        return TransactionEntity.builder()
                     .fromAccountId(transactionDto.getFromAccountId())
                     .toAccountId(transactionDto.getToAccountId())
                     .amount(transactionDto.getAmount())
@@ -69,8 +64,8 @@ public class TransactionServer {
                     .build();
     }
 
-    private AccountDao getAndValidateAccount(final Long accountId, final ErrorsCode errorsCode) throws AccountNotExistsException {
-        AccountDao accountFrom = accountRepository.findAccountById(accountId);
+    private AccountEntity getAndValidateAccount(final Long accountId, final ErrorsCode errorsCode) throws AccountNotExistsException {
+        AccountEntity accountFrom = accountRepository.findAccountById(accountId);
         if (accountFrom.getAccountId() == 0) {
             throw new AccountNotExistsException(errorsCode.getMessage());
         }
@@ -84,15 +79,15 @@ public class TransactionServer {
 
         return transactionRepository.getTransactionsForAccount(accountId)
                 .stream()
-                .map(transactionDao -> TransactionDto.builder()
-                                                    .transactionId(transactionDao.getTransactionId())
-                                                    .fromAccountId(transactionDao.getFromAccountId())
-                                                    .toAccountId(transactionDao.getToAccountId())
-                                                    .amount(transactionDao.getAmount())
-                                                    .currencyCode(transactionDao.getCurrencyCode())
-                                                    .status(transactionDao.getStatus().name())
-                                                    .date(transactionDao.getDate())
-                                                    .message(transactionDao.getMessage())
+                .map(TransactionEntity -> TransactionDto.builder()
+                                                    .transactionId(TransactionEntity.getTransactionId())
+                                                    .fromAccountId(TransactionEntity.getFromAccountId())
+                                                    .toAccountId(TransactionEntity.getToAccountId())
+                                                    .amount(TransactionEntity.getAmount())
+                                                    .currencyCode(TransactionEntity.getCurrencyCode())
+                                                    .status(TransactionEntity.getStatus().name())
+                                                    .date(TransactionEntity.getDate())
+                                                    .message(TransactionEntity.getMessage())
                                                     .build())
                 .collect(Collectors.toList());
     }

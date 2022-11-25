@@ -1,33 +1,32 @@
 package com.bastion.bank.domain;
 
-import com.rev.common.ErrorsCode;
-import com.rev.common.exception.AccountBalanceUpdateException;
-import com.rev.common.exception.AccountCreationException;
-import com.rev.common.exception.AccountNotExistsException;
-import com.rev.dao.AccountDao;
-import com.rev.dto.AccountDto;
-import com.rev.repository.AccountRepository;
-import com.rev.repository.AccountRepositoryImpl;
+import com.bastion.bank.application.dto.AccountDto;
+import com.bastion.bank.domain.exception.AccountBalanceUpdateException;
+import com.bastion.bank.domain.exception.AccountCreationException;
+import com.bastion.bank.domain.exception.AccountNotExistsException;
+import com.bastion.bank.domain.model.ErrorsCode;
+import com.bastion.bank.infrustructure.repository.AccountRepository;
+import com.bastion.bank.infrustructure.repository.model.AccountEntity;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.rev.common.ErrorsCode.ACCOUNT_NOT_EXISTS;
-import static com.rev.common.ErrorsCode.ACCOUNT_UPDATE_BALANCE_FAILED;
+import static com.bastion.bank.domain.model.ErrorsCode.ACCOUNT_NOT_EXISTS;
+import static com.bastion.bank.domain.model.ErrorsCode.ACCOUNT_UPDATE_BALANCE_FAILED;
 
+
+@Service
+@AllArgsConstructor
 public class AccountServer {
 
     private final AccountRepository accountRepository;
 
-    @Inject
-    public AccountServer(AccountRepositoryImpl accountRepository) {
-        this.accountRepository = accountRepository;
-    }
 
     public AccountDto createAccount(AccountDto accountDto) throws AccountCreationException {
         try {
-            return mapAccountDaoToAccountDto(accountRepository.createAccount(createAccountDao(accountDto)));
+            return mapAccountEntityToAccountDto(accountRepository.createAccount(createAccountEntity(accountDto)));
         } catch (Exception ex) {
             throw new AccountCreationException(ErrorsCode.ACCOUNT_CREATION_FAILED.getMessage());
         }
@@ -36,41 +35,41 @@ public class AccountServer {
     public List<AccountDto> getAllAccounts() {
         return accountRepository.getAllAccounts()
                 .stream()
-                .map(accountDao -> mapAccountDaoToAccountDto(accountDao))
+                .map(AccountEntity -> mapAccountEntityToAccountDto(AccountEntity))
                 .collect(Collectors.toList());
     }
 
     public AccountDto findAccountById(Long accountId) throws AccountNotExistsException {
-        AccountDao accountDao = accountRepository.findAccountById(accountId);
-        validateIfAccountExists(accountDao);
-        return mapAccountDaoToAccountDto(accountDao);
+        AccountEntity AccountEntity = accountRepository.findAccountById(accountId);
+        validateIfAccountExists(AccountEntity);
+        return mapAccountEntityToAccountDto(AccountEntity);
     }
 
     public void updateAccountBalance(AccountDto accountDto) throws AccountNotExistsException, AccountBalanceUpdateException {
-        AccountDao accountDao = accountRepository.findAccountById(accountDto.getAccountId());
-        validateIfAccountExists(accountDao);
-        accountDao.setBalance(accountDto.getBalance());
+        AccountEntity AccountEntity = accountRepository.findAccountById(accountDto.getAccountId());
+        validateIfAccountExists(AccountEntity);
+        AccountEntity.setBalance(accountDto.getBalance());
         try {
-            accountRepository.updateAccountBalance(accountDao);
+            accountRepository.updateAccountBalance(AccountEntity);
         } catch (Exception exception) {
             throw new AccountBalanceUpdateException(ACCOUNT_UPDATE_BALANCE_FAILED.getMessage());
         }
     }
 
     public void deleteAccount(long accountId) throws AccountNotExistsException {
-        AccountDao accountDao = accountRepository.findAccountById(accountId);
-        validateIfAccountExists(accountDao);
+        AccountEntity AccountEntity = accountRepository.findAccountById(accountId);
+        validateIfAccountExists(AccountEntity);
         accountRepository.deleteAccount(accountId);
     }
 
-    private void validateIfAccountExists(AccountDao accountDao) throws AccountNotExistsException {
-        if (accountDao.getAccountId() == 0) {
+    private void validateIfAccountExists(AccountEntity AccountEntity) throws AccountNotExistsException {
+        if (AccountEntity.getAccountId() == 0) {
             throw new AccountNotExistsException(ACCOUNT_NOT_EXISTS.getMessage());
         }
     }
 
-    private AccountDao createAccountDao(AccountDto accountDto) {
-        return AccountDao.builder()
+    private AccountEntity createAccountEntity(AccountDto accountDto) {
+        return AccountEntity.builder()
                 .email(accountDto.getEmail())
                 .username(accountDto.getUsername())
                 .currencyCode(accountDto.getCurrencyCode())
@@ -78,13 +77,13 @@ public class AccountServer {
                 .build();
     }
 
-    private AccountDto mapAccountDaoToAccountDto(AccountDao accountDao) {
+    private AccountDto mapAccountEntityToAccountDto(AccountEntity AccountEntity) {
         return AccountDto.builder()
-                .accountId(accountDao.getAccountId())
-                .username(accountDao.getUsername())
-                .email(accountDao.getEmail())
-                .balance(accountDao.getBalance())
-                .currencyCode(accountDao.getCurrencyCode())
+                .accountId(AccountEntity.getAccountId())
+                .username(AccountEntity.getUsername())
+                .email(AccountEntity.getEmail())
+                .balance(AccountEntity.getBalance())
+                .currencyCode(AccountEntity.getCurrencyCode())
                 .build();
     }
 }
