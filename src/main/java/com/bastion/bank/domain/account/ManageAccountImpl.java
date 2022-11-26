@@ -5,12 +5,10 @@ import com.bastion.bank.domain.account.exception.AccountCreationException;
 import com.bastion.bank.domain.account.exception.AccountNotExistsException;
 import com.bastion.bank.domain.account.model.AccountData;
 import com.bastion.bank.domain.transaction.model.ErrorsCode;
-import com.bastion.bank.infrustructure.repository.model.AccountEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.bastion.bank.domain.transaction.model.ErrorsCode.ACCOUNT_NOT_EXISTS;
 import static com.bastion.bank.domain.transaction.model.ErrorsCode.ACCOUNT_UPDATE_BALANCE_FAILED;
@@ -24,7 +22,7 @@ public class ManageAccountImpl implements ManageAccount {
     @Override
     public AccountData createAccount(AccountData accountData) throws AccountCreationException {
         try {
-            return mapAccountEntityToAccount(accountRepository.createAccount(createAccountEntity(accountData)));
+            return accountRepository.createAccount(accountData);
         } catch (Exception ex) {
             throw new AccountCreationException(ErrorsCode.ACCOUNT_CREATION_FAILED.getMessage());
         }
@@ -32,26 +30,23 @@ public class ManageAccountImpl implements ManageAccount {
 
     @Override
     public List<AccountData> getAllAccounts() {
-        return accountRepository.getAllAccounts()
-                .stream()
-                .map(AccountEntity -> mapAccountEntityToAccount(AccountEntity))
-                .collect(Collectors.toList());
+        return accountRepository.getAllAccounts();
     }
 
     @Override
     public AccountData findAccountById(Long accountId) throws AccountNotExistsException {
-        var AccountEntity = accountRepository.findAccountById(accountId);
-        validateIfAccountExists(AccountEntity);
-        return mapAccountEntityToAccount(AccountEntity);
+        var accountData = accountRepository.findAccountById(accountId);
+        validateIfAccountExists(accountData);
+        return accountData;
     }
 
     @Override
     public void updateAccountBalance(AccountData accountData) throws AccountNotExistsException, AccountBalanceUpdateException {
-        var accountEntity = accountRepository.findAccountById(accountData.accountId());
-        validateIfAccountExists(accountEntity);
-        accountEntity.setBalance(accountData.balance());
+//        var accountData = accountRepository.findAccountById(accountData.accountId());
+//        validateIfAccountExists(accountData);
+//        accountData.balance(accountData.balance());
         try {
-            accountRepository.updateAccountBalance(accountEntity);
+            accountRepository.updateAccountBalance(accountData);
         } catch (Exception exception) {
             throw new AccountBalanceUpdateException(ACCOUNT_UPDATE_BALANCE_FAILED.getMessage());
         }
@@ -59,33 +54,14 @@ public class ManageAccountImpl implements ManageAccount {
 
     @Override
     public void deleteAccount(long accountId) throws AccountNotExistsException {
-        var accountEntity = accountRepository.findAccountById(accountId);
-        validateIfAccountExists(accountEntity);
+        var accountData = accountRepository.findAccountById(accountId);
+        validateIfAccountExists(accountData);
         accountRepository.deleteAccount(accountId);
     }
 
-    private void validateIfAccountExists(AccountEntity accountEntity) throws AccountNotExistsException {
-        if (accountEntity.getAccountId() == 0) {
+    private void validateIfAccountExists(AccountData accountData) throws AccountNotExistsException {
+        if (accountData.accountId() == 0) {
             throw new AccountNotExistsException(ACCOUNT_NOT_EXISTS.getMessage());
         }
-    }
-
-    private AccountEntity createAccountEntity(AccountData accountData) {
-        return AccountEntity.builder()
-                .email(accountData.email())
-                .username(accountData.username())
-                .currencyCode(accountData.currencyCode())
-                .balance(accountData.balance())
-                .build();
-    }
-
-    private AccountData mapAccountEntityToAccount(AccountEntity accountEntity) {
-        return AccountData.builder()
-                .accountId(accountEntity.getAccountId())
-                .username(accountEntity.getUsername())
-                .email(accountEntity.getEmail())
-                .balance(accountEntity.getBalance())
-                .currencyCode(accountEntity.getCurrencyCode())
-                .build();
     }
 }

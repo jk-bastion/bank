@@ -29,27 +29,27 @@ public class ManageTransactionImpl implements ManageTransaction {
     @Override
     public void addTransaction(final TransactionData transactionData) throws Exception {
 
-        AccountEntity accountFrom = getAndValidateAccount(transactionData.fromAccountId(), SRC_ACCOUNT_NOT_EXISTS);
-        AccountEntity accountTo = getAndValidateAccount(transactionData.toAccountId(), DES_ACCOUNT_NOT_EXISTS);
-
-        if (!(accountFrom.getCurrencyCode().equals(transactionData.currencyCode()) && accountTo.getCurrencyCode().equals(accountFrom.getCurrencyCode()))) {
-            transactionRepository.addTransaction(getTransactionEntity(transactionData, INVALID_CURRENCY.getMessage(), TransactionStatus.FAILED));
-            throw new InvalidCurrencyException(INVALID_CURRENCY.getMessage());
-        }
-
-        if (!(accountFrom.getBalance().compareTo(transactionData.amount()) >= 0)) {
-            transactionRepository.addTransaction(accountFrom, accountTo, getTransactionEntity(transactionData, NOT_ENOUGH_BALANCE.getMessage(), TransactionStatus.FAILED));
-            throw new NotEnoughBalanceException(NOT_ENOUGH_BALANCE.getMessage());
-        }
-        TransactionEntity TransactionEntity = transactionRepository.addTransaction(accountFrom, accountTo, getTransactionEntity(transactionData, "", TransactionStatus.SUCCESS));
-
-        if (TransactionEntity.getTransactionId() == null) {
-            if (NOT_ENOUGH_BALANCE.getMessage().equals(TransactionEntity.getMessage())) {
-                TransactionEntity.setMessage(UNEXPECTED_ERROR.getMessage());
-                TransactionEntity.setStatus(TransactionStatus.FAILED);
-            }
-            transactionRepository.addTransaction(TransactionEntity);
-        }
+//        AccountEntity accountFrom = getAndValidateAccount(transactionData.fromAccountId(), SRC_ACCOUNT_NOT_EXISTS);
+//        AccountEntity accountTo = getAndValidateAccount(transactionData.toAccountId(), DES_ACCOUNT_NOT_EXISTS);
+//
+//        if (!(accountFrom.getCurrencyCode().equals(transactionData.currencyCode()) && accountTo.getCurrencyCode().equals(accountFrom.getCurrencyCode()))) {
+//            transactionRepository.addTransaction(getTransactionEntity(transactionData, INVALID_CURRENCY.getMessage(), TransactionStatus.FAILED));
+//            throw new InvalidCurrencyException(INVALID_CURRENCY.getMessage());
+//        }
+//
+//        if (!(accountFrom.getBalance().compareTo(transactionData.amount()) >= 0)) {
+//            transactionRepository.addTransaction(accountFrom, accountTo, getTransactionEntity(transactionData, NOT_ENOUGH_BALANCE.getMessage(), TransactionStatus.FAILED));
+//            throw new NotEnoughBalanceException(NOT_ENOUGH_BALANCE.getMessage());
+//        }
+//        TransactionEntity TransactionEntity = transactionRepository.addTransaction(accountFrom, accountTo, getTransactionEntity(transactionData, "", TransactionStatus.SUCCESS));
+//
+//        if (TransactionEntity.getTransactionId() == null) {
+//            if (NOT_ENOUGH_BALANCE.getMessage().equals(TransactionEntity.getMessage())) {
+//                TransactionEntity.setMessage(UNEXPECTED_ERROR.getMessage());
+//                TransactionEntity.setStatus(TransactionStatus.FAILED);
+//            }
+//            transactionRepository.addTransaction(TransactionEntity);
+//        }
     }
 
     private TransactionEntity getTransactionEntity(TransactionData transactionDto,  String message, TransactionStatus status) {
@@ -65,31 +65,34 @@ public class ManageTransactionImpl implements ManageTransaction {
     }
 
     private AccountEntity getAndValidateAccount(final Long accountId, final ErrorsCode errorsCode) throws AccountNotExistsException {
-        AccountEntity accountFrom = accountRepository.findAccountById(accountId);
-        if (accountFrom.getAccountId() == 0) {
-            throw new AccountNotExistsException(errorsCode.getMessage());
-        }
-        return accountFrom;
+//        AccountEntity accountFrom = accountRepository.findAccountById(accountId);
+//        if (accountFrom.getAccountId() == 0) {
+//            throw new AccountNotExistsException(errorsCode.getMessage());
+//        }
+//        return accountFrom;
+        return null;
     }
 
     @Override
     public List<TransactionData> getTransactionsForAccount(final Long accountId) throws AccountNotExistsException {
-        if (accountRepository.findAccountById(accountId).getAccountId() == 0) {
-            throw new AccountNotExistsException(ACCOUNT_NOT_EXISTS.getMessage());
-        }
+//        if (accountRepository.findAccountById(accountId).getAccountId() == 0) {
+//            throw new AccountNotExistsException(ACCOUNT_NOT_EXISTS.getMessage());
+//        }
+//
+//        return transactionRepository.getTransactionsForAccount(accountId)
+//                .stream()
+//                .map(TransactionEntity -> TransactionData.builder()
+//                                                    .transactionId(TransactionEntity.getTransactionId())
+//                                                    .fromAccountId(TransactionEntity.getFromAccountId())
+//                                                    .toAccountId(TransactionEntity.getToAccountId())
+//                                                    .amount(TransactionEntity.getAmount())
+//                                                    .currencyCode(TransactionEntity.getCurrencyCode())
+//                                                    .status(TransactionEntity.getStatus().name())
+//                                                    .date(TransactionEntity.getDate())
+//                                                    .message(TransactionEntity.getMessage())
+//                                                    .build())
+//                .collect(Collectors.toList());
 
-        return transactionRepository.getTransactionsForAccount(accountId)
-                .stream()
-                .map(TransactionEntity -> TransactionData.builder()
-                                                    .transactionId(TransactionEntity.getTransactionId())
-                                                    .fromAccountId(TransactionEntity.getFromAccountId())
-                                                    .toAccountId(TransactionEntity.getToAccountId())
-                                                    .amount(TransactionEntity.getAmount())
-                                                    .currencyCode(TransactionEntity.getCurrencyCode())
-                                                    .status(TransactionEntity.getStatus().name())
-                                                    .date(TransactionEntity.getDate())
-                                                    .message(TransactionEntity.getMessage())
-                                                    .build())
-                .collect(Collectors.toList());
+        return List.of();
     }
 }

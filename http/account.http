@@ -1,0 +1,10 @@
+### POST
+POST http://localhost:8082/api/v1/accounts/
+Content-Type: application/json
+
+{
+"username" : "testusername",
+"email" : "testemail@gop.com",
+"balance" :10,
+"currencyCode" : "usd"
+}

@@ -28,13 +28,13 @@ public class AccountController {
 
     @PostMapping(value = "/accounts/", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createAccount(AccountDto accountDto) throws AccountCreationException {
+    public void createAccount(@RequestBody AccountDto accountDto) throws AccountCreationException {
         manageAccount.createAccount(mapToAccountData(accountDto));
     }
 
     @PutMapping(value = "/accounts/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateAccount(AccountDto accountDto) throws AccountNotExistsException, AccountBalanceUpdateException {
+    public void updateAccount(@RequestBody AccountDto accountDto) throws AccountNotExistsException, AccountBalanceUpdateException {
         manageAccount.updateAccountBalance(mapToAccountData(accountDto));
     }
 

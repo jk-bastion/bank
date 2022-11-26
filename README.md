@@ -1,9 +1,9 @@
 ##  RESTful API for money transfers between accounts
 # Technologies
  - Java 17
- - Spring
+ - Spring boot
  - H2 in memory database
- - Hibernate 
+
 # How to run
 Clone project, run MainApplication from IDE or run with maven by executing
 
@@ -14,7 +14,8 @@ mvn clean install exec:java
 # Application usage
 Create an account
 ````
-POST http://localhost:8080/api/v1/account
+POST http://localhost:8082/api/v1/accounts/
+Content-Type: application/json
 {
 	"username" : "testusername",
 	"email" : "testemail@gop.com",

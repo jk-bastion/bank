@@ -1,6 +1,8 @@
 package com.bastion.bank.infrustructure.exception.handlers;
 
 import com.bastion.bank.domain.account.exception.AccountBalanceUpdateException;
+import com.bastion.bank.domain.account.exception.AccountCreationException;
+import com.bastion.bank.domain.account.exception.AccountNotExistsException;
 import com.bastion.bank.domain.transaction.exception.InvalidCurrencyException;
 import com.bastion.bank.domain.transaction.exception.NotEnoughBalanceException;
 import lombok.AllArgsConstructor;
@@ -20,13 +22,23 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 @Slf4j
 @Order(HIGHEST_PRECEDENCE)
 @ControllerAdvice
-public class TransferExceptionHandler extends ResponseEntityExceptionHandler {
+public class AccountTransferExceptionHandler extends ResponseEntityExceptionHandler {
     private static final String NOT_ENOUGH_BALANCE = "1010";
     private static final String INVALID_CURRENCY = "1020";
     private static final String ACCOUNT_BALANCE_UPDATE = "1030";
+    private static final String ACCOUNT_CREATION = "1040";
+    private static final String ACCOUNT_NOT_EXISTS = "1020";
 
+    //    todo: REVIEW CODES
+    @ExceptionHandler(AccountCreationException.class)
+    public final ResponseEntity<ApiErrorsResponse> handleAccountCreationException(AccountCreationException ex) {
+        return new ResponseEntity<>(new ApiErrorsResponse(List.of(new ApiError(ACCOUNT_CREATION, ex.getMessage()))), HttpStatus.BAD_REQUEST);
+    }
 
-    //TODO: review http codes
+    @ExceptionHandler(AccountNotExistsException.class)
+    public final ResponseEntity<ApiErrorsResponse> handleIAccountNotExistsException(AccountNotExistsException ex) {
+        return new ResponseEntity<>(new ApiErrorsResponse(List.of(new ApiError(ACCOUNT_NOT_EXISTS, ex.getMessage()))), HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(NotEnoughBalanceException.class)
     public final ResponseEntity<ApiErrorsResponse> handleNotEnoughBalanceException(NotEnoughBalanceException ex) {
@@ -39,7 +51,7 @@ public class TransferExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(AccountBalanceUpdateException.class)
-    public final ResponseEntity<ApiErrorsResponse> handleIccountBalanceUpdateException(AccountBalanceUpdateException ex) {
+    public final ResponseEntity<ApiErrorsResponse> handleAccountBalanceUpdateException(AccountBalanceUpdateException ex) {
         return new ResponseEntity<>(new ApiErrorsResponse(List.of(new ApiError(ACCOUNT_BALANCE_UPDATE, ex.getMessage()))), HttpStatus.BAD_REQUEST);
     }
 
