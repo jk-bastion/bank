@@ -1,24 +1,23 @@
 package com.bastion.bank.infrustructure.repository.model;
 
 import com.bastion.bank.domain.model.TransactionStatus;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Builder
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "transaction")
 @Table(name = "transaction")
-public class TransactionEntity
-{
+public class TransactionEntity {
 
     @Id
     @GeneratedValue
+    @Column(name = "id")
     private Long transactionId;
 
     @NotNull(message = "Source account id is required")
@@ -47,19 +46,4 @@ public class TransactionEntity
 
     @Column(name ="message")
     private String message;
-
-    public TransactionEntity() {
-    }
-
-    public TransactionEntity(Long transactionId, Long fromAccountId, Long toAccountId, BigDecimal amount, String currencyCode, TransactionStatus status,
-                             java.sql.Date date, String message) {
-        this.transactionId = transactionId;
-        this.fromAccountId = fromAccountId;
-        this.toAccountId = toAccountId;
-        this.amount = amount;
-        this.currencyCode = currencyCode;
-        this.status = status;
-        this.date = date;
-        this.message = message;
-    }
 }
