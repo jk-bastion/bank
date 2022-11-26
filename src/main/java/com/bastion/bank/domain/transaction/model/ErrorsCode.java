@@ -1,4 +1,4 @@
-package com.bastion.bank.domain.model;
+package com.bastion.bank.domain.transaction.model;
 
 public enum ErrorsCode {
 

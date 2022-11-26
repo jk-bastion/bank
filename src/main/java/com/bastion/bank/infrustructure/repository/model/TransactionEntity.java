@@ -1,6 +1,6 @@
 package com.bastion.bank.infrustructure.repository.model;
 
-import com.bastion.bank.domain.model.TransactionStatus;
+import com.bastion.bank.domain.transaction.model.TransactionStatus;
 import lombok.*;
 
 import javax.persistence.*;

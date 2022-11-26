@@ -1,7 +1,7 @@
 package com.bastion.bank.infrustructure.exception.handlers;
 
-import com.bastion.bank.domain.exception.AccountCreationException;
-import com.bastion.bank.domain.exception.AccountNotExistsException;
+import com.bastion.bank.domain.account.exception.AccountCreationException;
+import com.bastion.bank.domain.account.exception.AccountNotExistsException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

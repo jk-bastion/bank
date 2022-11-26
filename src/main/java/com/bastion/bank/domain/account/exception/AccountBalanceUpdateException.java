@@ -1,4 +1,4 @@
-package com.bastion.bank.domain.exception;
+package com.bastion.bank.domain.account.exception;
 
 public class AccountBalanceUpdateException extends Exception {
 

@@ -1,5 +1,8 @@
 package com.bastion.bank.infrustructure.repository;
 
+import com.bastion.bank.domain.account.AccountRepository;
+import com.bastion.bank.domain.account.model.AccountData;
+import com.bastion.bank.infrustructure.mapper.Mapper;
 import com.bastion.bank.infrustructure.repository.model.AccountEntity;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -14,29 +18,32 @@ import java.util.List;
 public class AccountRepositoryImpl implements AccountRepository {
 
     private final JpaRepository<AccountEntity, Long> jpaRepository;
+    private final Mapper<AccountData, AccountEntity> mapper;
 
     @Override
-    public AccountEntity createAccount(AccountEntity accountEntity) {
-       return jpaRepository.save(accountEntity);
+    public AccountData createAccount(AccountData accountData) {
+        return mapper.mapToData(jpaRepository.save(mapper.mapToEntity(accountData)));
     }
 
     @Override
-    public void updateAccountBalance(AccountEntity accountEntity) {
-        jpaRepository.save(accountEntity);
+    public void updateAccountBalance(AccountData accountData) {
+        jpaRepository.save(mapper.mapToEntity(accountData));
     }
 
     @Override
-    public List<AccountEntity> getAllAccounts() {
-        return jpaRepository.findAll();
+    public List<AccountData> getAllAccounts() {
+        return jpaRepository.findAll().stream()
+                .map(mapper::mapToData)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public AccountEntity findAccountById(Long accountId) {
-        return jpaRepository.findById(accountId).orElseGet(() -> AccountEntity.builder().build());
+    public AccountData findAccountById(Long accountId) {
+        return mapper.mapToData(jpaRepository.findById(accountId).orElseGet(() -> AccountEntity.builder().build()));
     }
 
     @Override
     public void deleteAccount(Long accountId) {
-      jpaRepository.deleteById(accountId);
+        jpaRepository.deleteById(accountId);
     }
 }

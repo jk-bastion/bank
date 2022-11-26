@@ -1,8 +1,8 @@
 package com.bastion.bank.infrustructure.exception.handlers;
 
-import com.bastion.bank.domain.exception.AccountBalanceUpdateException;
-import com.bastion.bank.domain.exception.InvalidCurrencyException;
-import com.bastion.bank.domain.exception.NotEnoughBalanceException;
+import com.bastion.bank.domain.account.exception.AccountBalanceUpdateException;
+import com.bastion.bank.domain.transaction.exception.InvalidCurrencyException;
+import com.bastion.bank.domain.transaction.exception.NotEnoughBalanceException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
