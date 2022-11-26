@@ -1,10 +1,15 @@
-### POST
+### CREATE ACCOUNT
 POST http://localhost:8082/api/v1/accounts/
 Content-Type: application/json
 
 {
 "username" : "testusername",
-"email" : "testemail@gop.com",
+"email" : "testemail2@gop.com",
 "balance" :10,
 "currencyCode" : "usd"
 }
+
+
+
+### GET ACCOUNT
+GET http://localhost:8082/api/v1/accounts/

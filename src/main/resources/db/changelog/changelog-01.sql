@@ -1,6 +1,6 @@
 create table if not exists account
 (
-    id long  PRIMARY KEY,
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     username varchar(40) NOT NULL,
     email    varchar(40) UNIQUE,
     currency_code  varchar(3),
@@ -9,9 +9,9 @@ create table if not exists account
 
 create table if not exists transaction
 (
-    id long PRIMARY KEY,
-    fromAccountId long NOT NULL,
-    toAccountId long NOT NULL,
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    fromAccountId INT NOT NULL,
+    toAccountId INT NOT NULL,
     currencyCode  varchar(3),
     amount  varchar(240),
     status  varchar(20),
