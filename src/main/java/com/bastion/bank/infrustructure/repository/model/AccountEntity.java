@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @Table(name = "account")
 public class AccountEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long accountId;
 
@@ -30,7 +30,7 @@ public class AccountEntity {
     @Column(name= "balance")
     private BigDecimal balance;
 
-    @Column(name= "currencyCode")
+    @Column(name= "currency_code")
     private String currencyCode;
 
 }

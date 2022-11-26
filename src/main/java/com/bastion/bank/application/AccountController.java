@@ -62,7 +62,7 @@ public class AccountController {
                 .username(accountDto.username)
                 .balance(accountDto.balance)
                 .currencyCode(accountDto.currencyCode)
-                .accountId(accountDto.accountId != 0 ? accountDto.accountId : null)
+                .accountId(accountDto.accountId != 0 ? accountDto.accountId : 0)
                 .build();
     }
 
