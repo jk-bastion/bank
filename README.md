@@ -61,7 +61,7 @@ HTTP 200 OK
 
 Update account balance
 ````
-PUT http://localhost:8080/api/v1/accounts
+PUT http://localhost:8080/api/v1/accounts/
 {
     "accountId": 1,
     "username": "testusername",

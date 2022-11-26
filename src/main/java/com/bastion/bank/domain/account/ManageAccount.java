@@ -1,6 +1,6 @@
 package com.bastion.bank.domain.account;
 
-import com.bastion.bank.domain.account.exception.AccountBalanceUpdateException;
+import com.bastion.bank.domain.account.exception.AccountUpdateException;
 import com.bastion.bank.domain.account.exception.AccountCreationException;
 import com.bastion.bank.domain.account.exception.AccountNotExistsException;
 import com.bastion.bank.domain.account.model.AccountData;
@@ -14,7 +14,7 @@ public interface ManageAccount {
 
     AccountData findAccountById(Long accountId) throws AccountNotExistsException;
 
-    void updateAccountBalance(AccountData accountData) throws AccountNotExistsException, AccountBalanceUpdateException;
+    void updateAccountBalance(AccountData accountData) throws AccountNotExistsException, AccountUpdateException;
 
     void deleteAccount(long accountId) throws AccountNotExistsException;
 }

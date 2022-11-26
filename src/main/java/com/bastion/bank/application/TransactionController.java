@@ -30,7 +30,7 @@ public class TransactionController {
     }
 
     @GetMapping(value = "/accounts/{accountId}/transactions/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<TransactionDto> getTransactionsForAccount(@PathParam("accountId") String accountId) throws AccountNotExistsException {
+    public List<TransactionDto> getTransactionsForAccount(@RequestParam("accountId") String accountId) throws AccountNotExistsException {
         return transactionServer.getTransactionsForAccount(Long.parseLong(accountId)).stream()
                 .map(this::mapToTransactionDto)
                 .collect(Collectors.toList());

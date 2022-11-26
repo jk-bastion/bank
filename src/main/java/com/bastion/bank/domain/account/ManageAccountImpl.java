@@ -1,6 +1,6 @@
 package com.bastion.bank.domain.account;
 
-import com.bastion.bank.domain.account.exception.AccountBalanceUpdateException;
+import com.bastion.bank.domain.account.exception.AccountUpdateException;
 import com.bastion.bank.domain.account.exception.AccountCreationException;
 import com.bastion.bank.domain.account.exception.AccountNotExistsException;
 import com.bastion.bank.domain.account.model.AccountData;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.bastion.bank.domain.transaction.model.ErrorsCode.ACCOUNT_NOT_EXISTS;
-import static com.bastion.bank.domain.transaction.model.ErrorsCode.ACCOUNT_UPDATE_BALANCE_FAILED;
+import static com.bastion.bank.domain.transaction.model.ErrorsCode.ACCOUNT_UPDATE_FAILED;
 
 
 @Service
@@ -41,14 +41,11 @@ public class ManageAccountImpl implements ManageAccount {
     }
 
     @Override
-    public void updateAccountBalance(AccountData accountData) throws AccountNotExistsException, AccountBalanceUpdateException {
-//        var accountData = accountRepository.findAccountById(accountData.accountId());
-//        validateIfAccountExists(accountData);
-//        accountData.balance(accountData.balance());
+    public void updateAccountBalance(AccountData accountData) throws AccountNotExistsException, AccountUpdateException {
         try {
             accountRepository.updateAccountBalance(accountData);
         } catch (Exception exception) {
-            throw new AccountBalanceUpdateException(ACCOUNT_UPDATE_BALANCE_FAILED.getMessage());
+            throw new AccountUpdateException(ACCOUNT_UPDATE_FAILED.getMessage());
         }
     }
 

@@ -1,7 +1,7 @@
 package com.bastion.bank.application;
 
 import com.bastion.bank.domain.account.ManageAccount;
-import com.bastion.bank.domain.account.exception.AccountBalanceUpdateException;
+import com.bastion.bank.domain.account.exception.AccountUpdateException;
 import com.bastion.bank.domain.account.exception.AccountCreationException;
 import com.bastion.bank.domain.account.exception.AccountNotExistsException;
 import com.bastion.bank.domain.account.model.AccountData;
@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,18 +27,18 @@ public class AccountController {
 
     @PostMapping(value = "/accounts/", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createAccount(@RequestBody AccountDto accountDto) throws AccountCreationException {
-        manageAccount.createAccount(mapToAccountData(accountDto));
+    public AccountDto createAccount(@RequestBody AccountDto accountDto) throws AccountCreationException {
+        return mapToAccountDto(manageAccount.createAccount(mapToAccountData(accountDto)));
     }
 
     @PutMapping(value = "/accounts/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateAccount(@RequestBody AccountDto accountDto) throws AccountNotExistsException, AccountBalanceUpdateException {
+    public void updateAccount(@RequestBody AccountDto accountDto) throws AccountNotExistsException, AccountUpdateException {
         manageAccount.updateAccountBalance(mapToAccountData(accountDto));
     }
 
     @GetMapping(value = "/accounts/{accountId}/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AccountDto getAccount(@PathParam("accountId") String accountId) throws AccountNotExistsException {
+    public AccountDto getAccount(@RequestParam("accountId") String accountId) throws AccountNotExistsException {
         return mapToAccountDto(manageAccount.findAccountById(Long.parseLong(accountId)));
     }
 
@@ -52,7 +51,7 @@ public class AccountController {
 
     @DeleteMapping("/accounts/{accountId}/")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAccount(@PathParam("accountId") String accountId) throws AccountNotExistsException {
+    public void deleteAccount(@RequestParam("accountId") String accountId) throws AccountNotExistsException {
         manageAccount.deleteAccount(Long.parseLong(accountId));
     }
 

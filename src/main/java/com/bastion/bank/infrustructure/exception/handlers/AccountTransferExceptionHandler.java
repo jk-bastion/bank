@@ -1,6 +1,6 @@
 package com.bastion.bank.infrustructure.exception.handlers;
 
-import com.bastion.bank.domain.account.exception.AccountBalanceUpdateException;
+import com.bastion.bank.domain.account.exception.AccountUpdateException;
 import com.bastion.bank.domain.account.exception.AccountCreationException;
 import com.bastion.bank.domain.account.exception.AccountNotExistsException;
 import com.bastion.bank.domain.transaction.exception.InvalidCurrencyException;
@@ -50,8 +50,8 @@ public class AccountTransferExceptionHandler extends ResponseEntityExceptionHand
         return new ResponseEntity<>(new ApiErrorsResponse(List.of(new ApiError(INVALID_CURRENCY, ex.getMessage()))), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(AccountBalanceUpdateException.class)
-    public final ResponseEntity<ApiErrorsResponse> handleAccountBalanceUpdateException(AccountBalanceUpdateException ex) {
+    @ExceptionHandler(AccountUpdateException.class)
+    public final ResponseEntity<ApiErrorsResponse> handleAccountBalanceUpdateException(AccountUpdateException ex) {
         return new ResponseEntity<>(new ApiErrorsResponse(List.of(new ApiError(ACCOUNT_BALANCE_UPDATE, ex.getMessage()))), HttpStatus.BAD_REQUEST);
     }
 
