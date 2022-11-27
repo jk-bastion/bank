@@ -1,19 +1,27 @@
-package com.bastion.transfer.application;
+package com.bastion.transfer;
 
 import com.bastion.transfer.domain.account.ManageAccount;
 import com.bastion.transfer.domain.account.model.AccountData;
 import com.bastion.transfer.domain.transaction.ManageTransaction;
+import com.bastion.transfer.domain.transaction.exception.NotEnoughBalanceException;
+import com.bastion.transfer.domain.transaction.model.ErrorsCode;
 import com.bastion.transfer.domain.transaction.model.TransactionData;
 import com.bastion.transfer.domain.transaction.model.TransactionStatus;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestPropertySource;
 
 import java.math.BigDecimal;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(locations="classpath:application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class TransferIntegrationTest {
 
     @Autowired
@@ -24,7 +32,7 @@ public class TransferIntegrationTest {
     private static final String EMAIL = "testemail@mail.com";
 
     private static final String USERNAME = "testusername";
-    private static final BigDecimal BALANCE = new BigDecimal("20");
+    private static final BigDecimal BALANCE = new BigDecimal("20.00");
     private static final String CURRENCY_CODE = "usd";
 
     @Test
@@ -37,7 +45,7 @@ public class TransferIntegrationTest {
                 .username("username2")
                 .currencyCode(CURRENCY_CODE)
                 .build());
-        var amount = new BigDecimal("10");
+        var amount = new BigDecimal("10.00");
 
         // when
         manageTransaction.addTransaction(TransactionData.builder()
@@ -61,6 +69,33 @@ public class TransferIntegrationTest {
 
         assertThat(manageAccount.findAccountById(accountFrom.accountId()).balance()).isEqualTo(BALANCE.subtract(amount));
         assertThat(manageAccount.findAccountById(accountTo.accountId()).balance()).isEqualTo(BALANCE.add(amount));
+    }
+
+    @Test
+    void transactionShouldFailedWhenNotEnoughMoneyToTransfer() throws Exception {
+        // given
+        var accountFrom = manageAccount.createAccount(getAccountData());
+        var accountTo = manageAccount.createAccount(AccountData.builder()
+                .email("email2")
+                .balance(BALANCE)
+                .username("username2")
+                .currencyCode(CURRENCY_CODE)
+                .build());
+        var amount = BALANCE.add(BigDecimal.ONE);
+
+        // when _&&  then
+        var statusRuntimeException = assertThrows(NotEnoughBalanceException.class, () ->
+                manageTransaction.addTransaction(TransactionData.builder()
+                        .fromAccountId(accountFrom.accountId())
+                        .toAccountId(accountTo.accountId())
+                        .message("message")
+                        .currencyCode(CURRENCY_CODE)
+                        .amount(amount)
+                        .build()));
+        Assertions.assertThat(statusRuntimeException.getMessage()).isEqualTo(ErrorsCode.NOT_ENOUGH_BALANCE.getMessage());
+
+        assertThat(manageAccount.findAccountById(accountFrom.accountId()).balance()).isEqualTo(BALANCE);
+        assertThat(manageAccount.findAccountById(accountTo.accountId()).balance()).isEqualTo(BALANCE);
     }
 
     private AccountData getAccountData() {

@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "username": "testusername2",
-  "email": "testemail1@gop.com",
+  "email": "testemail2@gop.com",
   "balance": 20,
   "currencyCode": "usd"
 }
