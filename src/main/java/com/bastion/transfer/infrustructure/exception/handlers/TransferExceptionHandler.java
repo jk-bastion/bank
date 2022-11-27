@@ -54,7 +54,6 @@ public class TransferExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(new ApiErrorsResponse(List.of(new ApiError(ACCOUNT_BALANCE_UPDATE, ex.getMessage()))), HttpStatus.BAD_REQUEST);
     }
 
-
     @Data
     @AllArgsConstructor
     private static class ApiErrorsResponse {

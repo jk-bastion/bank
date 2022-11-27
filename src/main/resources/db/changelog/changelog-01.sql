@@ -2,7 +2,7 @@ create table if not exists account
 (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     username varchar(40) NOT NULL,
-    email    varchar(40) UNIQUE,
+    email    varchar(40) NOT NULL UNIQUE,
     currencyCode  varchar(3),
     balance  varchar(240)
 );
@@ -18,3 +18,5 @@ create table if not exists transaction
     message varchar(240),
     date timestamp  NOT NULL
 );
+
+create index idx_transaction_from_account_id on transaction (fromAccountId);

@@ -27,6 +27,7 @@ public class TransactionMapper implements Mapper<TransactionData, TransactionEnt
     public TransactionData mapToData(TransactionEntity transactionEntity) {
         if (transactionEntity == null)
             return null;
+
         return TransactionData.builder()
                 .transactionId(transactionEntity.getTransactionId())
                 .fromAccountId(transactionEntity.getFromAccountId())

@@ -38,7 +38,6 @@ public class ManageTransactionImpl implements ManageTransaction {
 
         accountRepository.updateAccount(updateAccountData(accountFrom, accountFrom.balance().subtract(transactionData.amount())));
         accountRepository.updateAccount(updateAccountData(accountTo, accountTo.balance().add(transactionData.amount())));
-        Thread.sleep(10000);
         transactionRepository.addTransaction(updateTransactionData(transactionData, TransactionStatus.SUCCESS));
     }
 

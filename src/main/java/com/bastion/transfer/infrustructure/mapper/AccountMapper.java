@@ -25,6 +25,7 @@ public class AccountMapper implements Mapper<AccountData, AccountEntity> {
     public AccountData mapToData(AccountEntity accountEntity) {
         if (accountEntity == null)
             return null;
+
         return AccountData.builder()
                 .accountId(accountEntity.getAccountId())
                 .email(accountEntity.getEmail())

@@ -41,30 +41,6 @@ public class TransactionController {
                 .collect(Collectors.toList());
     }
 
-    private TransactionData mapToTransactionData(TransactionDto transactionDto, long fromAccountId) {
-        return TransactionData.builder()
-                .fromAccountId(fromAccountId)
-                .toAccountId(transactionDto.toAccountId)
-                .amount(transactionDto.amount)
-                .currencyCode(transactionDto.currencyCode)
-                .date(transactionDto.date)
-                .message(transactionDto.message)
-                .build();
-    }
-
-    private TransactionDto mapToTransactionDto(TransactionData transactionData) {
-        return TransactionDto.builder()
-                .transactionId(transactionData.transactionId())
-                .fromAccountId(transactionData.fromAccountId())
-                .toAccountId(transactionData.toAccountId())
-                .amount(transactionData.amount())
-                .currencyCode(transactionData.currencyCode())
-                .date(transactionData.date())
-                .status(transactionData.status().name())
-                .message(transactionData.message())
-                .build();
-    }
-
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -90,5 +66,29 @@ public class TransactionController {
         private String status;
 
         private String message;
+    }
+
+    private TransactionData mapToTransactionData(TransactionDto transactionDto, long fromAccountId) {
+        return TransactionData.builder()
+                .fromAccountId(fromAccountId)
+                .toAccountId(transactionDto.toAccountId)
+                .amount(transactionDto.amount)
+                .currencyCode(transactionDto.currencyCode)
+                .date(transactionDto.date)
+                .message(transactionDto.message)
+                .build();
+    }
+
+    private TransactionDto mapToTransactionDto(TransactionData transactionData) {
+        return TransactionDto.builder()
+                .transactionId(transactionData.transactionId())
+                .fromAccountId(transactionData.fromAccountId())
+                .toAccountId(transactionData.toAccountId())
+                .amount(transactionData.amount())
+                .currencyCode(transactionData.currencyCode())
+                .date(transactionData.date())
+                .status(transactionData.status().name())
+                .message(transactionData.message())
+                .build();
     }
 }

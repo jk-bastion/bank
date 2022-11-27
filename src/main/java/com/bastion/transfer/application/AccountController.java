@@ -27,14 +27,14 @@ public class AccountController {
 
     private final ManageAccount manageAccount;
 
-    @PostMapping(value = "/accounts/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/accounts/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public AccountDto createAccount(@RequestBody AccountDto accountDto) throws AccountCreationException {
         log.info("Create account {}", accountDto);
         return mapToAccountDto(manageAccount.createAccount(mapToAccountData(accountDto)));
     }
 
-    @PutMapping(value = "/accounts/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/accounts/", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateAccount(@RequestBody AccountDto accountDto) throws AccountNotExistsException, AccountUpdateException {
         log.info("Update account {}", accountDto);
@@ -62,25 +62,6 @@ public class AccountController {
         manageAccount.deleteAccount(accountId);
     }
 
-    private AccountData mapToAccountData(AccountDto accountDto) {
-        return AccountData.builder()
-                .email(accountDto.email)
-                .username(accountDto.username)
-                .balance(accountDto.balance)
-                .currencyCode(accountDto.currencyCode)
-                .accountId(accountDto.accountId != 0 ? accountDto.accountId : 0)
-                .build();
-    }
-
-    private static AccountDto mapToAccountDto(AccountData accountData) {
-        return AccountDto.builder()
-                .email(accountData.email())
-                .username(accountData.username())
-                .balance(accountData.balance())
-                .currencyCode(accountData.currencyCode())
-                .accountId(accountData.accountId())
-                .build();
-    }
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -100,5 +81,25 @@ public class AccountController {
 
         @JsonProperty(required = true)
         private String currencyCode;
+    }
+
+    private AccountData mapToAccountData(AccountDto accountDto) {
+        return AccountData.builder()
+                .email(accountDto.email)
+                .username(accountDto.username)
+                .balance(accountDto.balance)
+                .currencyCode(accountDto.currencyCode)
+                .accountId(accountDto.accountId != 0 ? accountDto.accountId : 0)
+                .build();
+    }
+
+    private static AccountDto mapToAccountDto(AccountData accountData) {
+        return AccountDto.builder()
+                .email(accountData.email())
+                .username(accountData.username())
+                .balance(accountData.balance())
+                .currencyCode(accountData.currencyCode())
+                .accountId(accountData.accountId())
+                .build();
     }
 }
