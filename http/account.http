@@ -4,19 +4,20 @@ Content-Type: application/json
 
 {
   "username": "testusername2",
-  "email": "testemail2@gop.com",
+  "email": "testemail3@gop.com",
   "balance": 20,
   "currencyCode": "usd"
 }
 
-### PUT http://localhost:8082/api/v1/accounts/
+### UPDATE ACCOUNT
+PUT http://localhost:8082/api/v1/accounts/
 Content-Type: application/json
 
 {
   "accountId": 2,
-  "username": "testusername1",
+  "username": "testusernamewwww1",
   "email": "testemail2@gop.com",
-  "balance": 20,
+  "balance": 0,
   "currencyCode": "usd"
 }
 
@@ -24,14 +25,14 @@ Content-Type: application/json
 GET http://localhost:8082/api/v1/accounts/1/
 
 ### GET TRANSACTIONS
-GET http://localhost:8082/api/v1/accounts/transactions/
+GET http://localhost:8082/api/v1/accounts/1/transactions/
 
-#####
+### CREATE TRANSACTIONS
 POST  http://localhost:8082/api/v1/accounts/1/transactions/
 Content-Type: application/json
 
 {
-    "toAccountId": 2,
+    "toAccountId": 8,
     "amount": "10",
     "currencyCode": "usd",
     "message" : "transfer title 1"

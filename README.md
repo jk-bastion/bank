@@ -7,10 +7,12 @@
  - H2 in memory database
 
 # How to run
-Clone project, run MainApplication from IDE or run with maven by executing
+Clone project, run MainApplication from IDE or 
+build and run project by executing following commands 
 
-```
-mvn clean install exec:java
+```bash
+./gradlew build
+./gradlew bootRun
 ```
 
 # Application usage

@@ -18,22 +18,37 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	liquidbaseVersion = '4.17.1'
+	javaxValidationVersion = '2.0.1.Final'
+	junitVersion = '5.9.1'
+	mockitoVersion = '4.8.1'
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+	implementation "javax.validation:validation-api:${javaxValidationVersion}"
+	testImplementation 'junit:junit:4.13.1'
+	testImplementation 'junit:junit:4.13.1'
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	// Database
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	runtimeOnly 'com.h2database:h2'
 
 	// Liquibase
-	implementation 'org.liquibase:liquibase-core:4.17.1'
+	implementation "org.liquibase:liquibase-core:${liquidbaseVersion}"
 
-//	implementation "com.h2database:h2:${h2databaseVersion}"
+	// Tests
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation "org.mockito:mockito-inline:${mockitoVersion}"
+	testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
+	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+	testImplementation 'org.assertj:assertj-core:3.23.1'
+	testImplementation group: 'org.easytesting', name: 'fest-assert', version: '1.4'
 }
 
 tasks.named('test') {
