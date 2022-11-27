@@ -22,7 +22,7 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 @Slf4j
 @Order(HIGHEST_PRECEDENCE)
 @ControllerAdvice
-public class AccountTransferExceptionHandler extends ResponseEntityExceptionHandler {
+public class TransferExceptionHandler extends ResponseEntityExceptionHandler {
     private static final String NOT_ENOUGH_BALANCE = "1010";
     private static final String INVALID_CURRENCY = "1020";
     private static final String ACCOUNT_BALANCE_UPDATE = "1030";

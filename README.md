@@ -7,7 +7,7 @@
  - H2 in memory database
 
 # How to run
-Clone project, run MainApplication from IDE or 
+Clone project, run TransferApplication from IDE or 
 build and run project by executing following commands 
 
 ```bash
