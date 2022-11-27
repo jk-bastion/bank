@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "username": "testusername2",
-  "email": "testemail3@gop.com",
+  "email": "testemail1@gop.com",
   "balance": 20,
   "currencyCode": "usd"
 }
@@ -24,6 +24,9 @@ Content-Type: application/json
 ### GET ACCOUNT
 GET http://localhost:8082/api/v1/accounts/1/
 
+### GET ALL ACCOUNTS
+GET http://localhost:8082/api/v1/accounts/
+
 ### GET TRANSACTIONS
 GET http://localhost:8082/api/v1/accounts/1/transactions/
 
@@ -32,7 +35,7 @@ POST  http://localhost:8082/api/v1/accounts/1/transactions/
 Content-Type: application/json
 
 {
-    "toAccountId": 8,
+    "toAccountId": 2,
     "amount": "10",
     "currencyCode": "usd",
     "message" : "transfer title 1"

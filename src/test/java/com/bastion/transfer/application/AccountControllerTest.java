@@ -1,7 +1,6 @@
 package com.bastion.transfer.application;
 
 import com.bastion.transfer.domain.account.ManageAccount;
-import com.bastion.transfer.domain.account.exception.AccountNotExistsException;
 import com.bastion.transfer.domain.account.model.AccountData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +14,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.bastion.transfer.domain.transaction.model.ErrorsCode.ACCOUNT_NOT_EXISTS;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AccountController.class)

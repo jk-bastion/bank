@@ -3,18 +3,12 @@ package com.bastion.transfer.domain.transaction.model;
 public enum ErrorsCode {
 
     ACCOUNT_NOT_EXISTS("account does not exist"),
-
-    SRC_ACCOUNT_NOT_EXISTS("source account does not exist"),
-
-    DES_ACCOUNT_NOT_EXISTS("destination account does not exist"),
     INVALID_CURRENCY("not compatible currency"),
     ACCOUNT_CREATION_FAILED("account creation failed"),
     NOT_ENOUGH_BALANCE("not enough balance"),
-    ACCOUNT_UPDATE_FAILED("account update failed"),
+    ACCOUNT_UPDATE_FAILED("account update failed");
 
-    UNEXPECTED_ERROR("unexpected error");
-
-    private String message;
+    private final String message;
 
     ErrorsCode(String message) {
         this.message = message;

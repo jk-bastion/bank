@@ -29,7 +29,7 @@ public class TransactionController {
     @PostMapping(value = "/accounts/{accountId}/transactions/", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public void addTransaction(@PathVariable("accountId") Long accountId, @RequestBody TransactionDto transactionDto) throws Exception {
-        log.info("Create new transaction {} for accountId=", transactionDto, accountId);
+        log.info("Create new transaction {} for accountId={}", transactionDto, accountId);
         manageTransaction.addTransaction(mapToTransactionData(transactionDto, accountId));
     }
 
