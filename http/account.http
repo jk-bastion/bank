@@ -1,15 +1,27 @@
-### CREATE ACCOUNT
+#### CREATE ACCOUNT
 POST http://localhost:8082/api/v1/accounts/
 Content-Type: application/json
 
 {
-"username" : "testusername",
+"username" : "testusername2",
 "email" : "testemail2@gop.com",
 "balance" :10,
 "currencyCode" : "usd"
 }
 
 
+#### GET ACCOUNT
+#GET http://localhost:8082/api/v1/accounts/
+#
 
-### GET ACCOUNT
-GET http://localhost:8082/api/v1/accounts/
+#####
+POST  http://localhost:8082/api/v1/accounts/transactions/
+Content-Type: application/json
+
+{
+    "fromAccountId": 1,
+    "toAccountId": 2,
+    "amount": "10",
+    "currencyCode": "usd",
+    "message" : "transfer title 1"
+}

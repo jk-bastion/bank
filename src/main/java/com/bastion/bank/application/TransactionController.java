@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class TransactionController {
     private final ManageTransactionImpl transactionServer;
 
-    @PostMapping(value = "/accounts/transactions/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/accounts/transactions/", consumes = MediaType.APPLICATION_JSON_VALUE,  produces = MediaType.APPLICATION_JSON_VALUE)
     public void addTransaction(@RequestBody TransactionDto transactionDto) throws Exception {
         transactionServer.addTransaction(mapToTransactionData(transactionDto));
     }
@@ -54,6 +54,7 @@ public class TransactionController {
                 .amount(transactionData.amount())
                 .currencyCode(transactionData.currencyCode())
                 .date(transactionData.date())
+                .status(transactionData.status().name())
                 .message(transactionData.message())
                 .build();
     }

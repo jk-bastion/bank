@@ -3,7 +3,7 @@ create table if not exists account
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     username varchar(40) NOT NULL,
     email    varchar(40) UNIQUE,
-    currency_code  varchar(3),
+    currencyCode  varchar(3),
     balance  varchar(240)
 );
 

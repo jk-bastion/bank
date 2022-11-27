@@ -28,7 +28,7 @@ public class ManageTransactionImpl implements ManageTransaction {
     private final AccountRepository accountRepository;
 
     @Override
-    @Transactional(Transactional.TxType.MANDATORY)
+    @Transactional(Transactional.TxType.REQUIRED)
     public void addTransaction(final TransactionData transactionData) throws Exception {
         var accountFrom = getAccountData(transactionData.fromAccountId(), transactionData);
         var accountTo = getAccountData(transactionData.toAccountId(), transactionData);

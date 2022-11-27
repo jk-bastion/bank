@@ -20,8 +20,6 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     private final TransactionRepositoryJpa jpaRepository;
     private final Mapper<TransactionData, TransactionEntity> mapper;
 
-
-//    @Transactional
     public void addTransaction(TransactionData transactionData) {
         jpaRepository.save(mapper.mapToEntity(transactionData));
     }
