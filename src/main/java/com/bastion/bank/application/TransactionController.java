@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,28 +18,30 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1")
 @AllArgsConstructor
 public class TransactionController {
     private final ManageTransactionImpl transactionServer;
 
-    @PostMapping(value = "/accounts/transactions/", consumes = MediaType.APPLICATION_JSON_VALUE,  produces = MediaType.APPLICATION_JSON_VALUE)
-    public void addTransaction(@RequestBody TransactionDto transactionDto) throws Exception {
-        transactionServer.addTransaction(mapToTransactionData(transactionDto));
+    @PostMapping(value = "/accounts/{accountId}/transactions/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void addTransaction(@PathVariable("accountId") Long accountId, @RequestBody TransactionDto transactionDto) throws Exception {
+        log.info("Create new transaction {} for accountId=", transactionDto, accountId);
+        transactionServer.addTransaction(mapToTransactionData(transactionDto, accountId));
     }
 
     @GetMapping(value = "/accounts/{accountId}/transactions/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<TransactionDto> getTransactionsForAccount(@PathVariable("accountId") String accountId) throws AccountNotExistsException {
-        return transactionServer.getTransactionsForAccount(Long.parseLong(accountId)).stream()
+    public List<TransactionDto> getTransactionsForAccount(@PathVariable("accountId") Long accountId) throws AccountNotExistsException {
+        log.info("List all transactions");
+        return transactionServer.getTransactionsForAccount(accountId).stream()
                 .map(this::mapToTransactionDto)
                 .collect(Collectors.toList());
     }
 
-    //TODO: better place - mapper interface
-    private TransactionData mapToTransactionData(TransactionDto transactionDto) {
+    private TransactionData mapToTransactionData(TransactionDto transactionDto, long fromAccountId) {
         return TransactionData.builder()
-                .fromAccountId(transactionDto.fromAccountId)
+                .fromAccountId(fromAccountId)
                 .toAccountId(transactionDto.toAccountId)
                 .amount(transactionDto.amount)
                 .currencyCode(transactionDto.currencyCode)
@@ -49,6 +52,7 @@ public class TransactionController {
 
     private TransactionDto mapToTransactionDto(TransactionData transactionData) {
         return TransactionDto.builder()
+                .transactionId(transactionData.transactionId())
                 .fromAccountId(transactionData.fromAccountId())
                 .toAccountId(transactionData.toAccountId())
                 .amount(transactionData.amount())
@@ -67,7 +71,6 @@ public class TransactionController {
 
         private long transactionId;
 
-        @JsonProperty(required = true)
         private long fromAccountId;
 
         @JsonProperty(required = true)

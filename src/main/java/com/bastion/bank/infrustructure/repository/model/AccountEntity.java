@@ -31,7 +31,7 @@ public class AccountEntity {
     @Column(name= "balance")
     private BigDecimal balance;
 
-    @Column(name= "currency_code")
+    @Column(name= "currencyCode")
     private String currencyCode;
 
 }

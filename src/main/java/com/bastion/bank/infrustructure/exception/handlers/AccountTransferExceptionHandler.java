@@ -29,7 +29,6 @@ public class AccountTransferExceptionHandler extends ResponseEntityExceptionHand
     private static final String ACCOUNT_CREATION = "1040";
     private static final String ACCOUNT_NOT_EXISTS = "1020";
 
-    //    todo: REVIEW CODES
     @ExceptionHandler(AccountCreationException.class)
     public final ResponseEntity<ApiErrorsResponse> handleAccountCreationException(AccountCreationException ex) {
         return new ResponseEntity<>(new ApiErrorsResponse(List.of(new ApiError(ACCOUNT_CREATION, ex.getMessage()))), HttpStatus.BAD_REQUEST);
@@ -46,7 +45,7 @@ public class AccountTransferExceptionHandler extends ResponseEntityExceptionHand
     }
 
     @ExceptionHandler(InvalidCurrencyException.class)
-    public final ResponseEntity<ApiErrorsResponse> handleInvalidCurrencyException(NotEnoughBalanceException ex) {
+    public final ResponseEntity<ApiErrorsResponse> handleInvalidCurrencyException(InvalidCurrencyException ex) {
         return new ResponseEntity<>(new ApiErrorsResponse(List.of(new ApiError(INVALID_CURRENCY, ex.getMessage()))), HttpStatus.BAD_REQUEST);
     }
 

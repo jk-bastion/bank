@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1")
 @AllArgsConstructor
@@ -28,22 +30,26 @@ public class AccountController {
     @PostMapping(value = "/accounts/", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public AccountDto createAccount(@RequestBody AccountDto accountDto) throws AccountCreationException {
+        log.info("Create account {}", accountDto);
         return mapToAccountDto(manageAccount.createAccount(mapToAccountData(accountDto)));
     }
 
     @PutMapping(value = "/accounts/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateAccount(@RequestBody AccountDto accountDto) throws AccountNotExistsException, AccountUpdateException {
+        log.info("Update account {}", accountDto);
         manageAccount.updateAccountBalance(mapToAccountData(accountDto));
     }
 
     @GetMapping(value = "/accounts/{accountId}/", produces = MediaType.APPLICATION_JSON_VALUE)
     public AccountDto getAccount(@PathVariable("accountId") Long accountId) throws AccountNotExistsException {
+        log.info("Retrieve account for accountId={}", accountId);
         return mapToAccountDto(manageAccount.findAccountById(accountId));
     }
 
     @GetMapping(value = "/accounts/", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<AccountDto> getAllAccounts() {
+        log.info("Retrieve all accounts");
         return manageAccount.getAllAccounts().stream()
                 .map(AccountController::mapToAccountDto)
                 .collect(Collectors.toList());
@@ -52,10 +58,10 @@ public class AccountController {
     @DeleteMapping("/accounts/{accountId}/")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAccount(@PathVariable("accountId") Long accountId) throws AccountNotExistsException {
+        log.info("Delete account with id={}", accountId);
         manageAccount.deleteAccount(accountId);
     }
 
-    //TODO : mappper
     private static AccountData mapToAccountData(AccountDto accountDto) {
         return AccountData.builder()
                 .email(accountDto.email)

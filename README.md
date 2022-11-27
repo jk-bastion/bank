@@ -36,9 +36,9 @@ HTTP 201 Created
     "currencyCode": "usd"
 }
 ````
-Get account
+Get account by id
 ````
-GET http://localhost:8082/api/v1/account/1
+GET http://localhost:8082/api/v1/account/{accountId}/
 ````
 Response
 ````
@@ -61,7 +61,7 @@ HTTP 200 OK
 <response body>
 ````
 
-Update account balance
+Update account data
 ````
 PUT http://localhost:8082/api/v1/accounts/
 Content-Type: application/json
@@ -79,21 +79,20 @@ Response
 HTTP 204 No Content
 ````
 
-Delete account
+Delete account 
 ````
-DELETE http://localhost:8080/api/v1/accounts/1
+DELETE http://localhost:8082/api/v1/accounts/{accountId}/
 ````
 Response
 ````
 HTTP 204 NO CONTENT
 ````
-Add user transaction - transfer money from one account to another
+Create new transaction - transfer money from one account to another
 ````
-POST  http://localhost:8080/api/v1/accounts/transactions/
+POST  http://localhost:8082/api/v1/accounts/{accountId}/transactions/
 Content-Type: application/json
 
 {
-    "fromAccountId": 1,
     "toAccountId": 2,
     "amount": "2",
     "currencyCode": "usd",
@@ -104,9 +103,9 @@ Response
 ````
 HTTP 201 Created
 ````
-Get all transaction for given account
+Get all transactions for given account
 ````
-GET  http://localhost:8080/api/v1/accounts/1/transactions/
+GET  http://localhost:8082/api/v1/accounts/{accountId}/transactions/
 ````
 Response
 ````

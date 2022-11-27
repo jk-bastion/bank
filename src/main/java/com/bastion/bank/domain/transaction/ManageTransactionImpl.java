@@ -34,14 +34,15 @@ public class ManageTransactionImpl implements ManageTransaction {
         var accountTo = getAccountData(transactionData.toAccountId(), transactionData);
 
         validateCurrencyCode(transactionData, accountFrom, accountTo);
-        validateBallance(transactionData, accountFrom);
+        validateBalance(transactionData, accountFrom);
 
         accountRepository.updateAccount(updateAccountData(accountFrom, accountFrom.balance().subtract(transactionData.amount())));
         accountRepository.updateAccount(updateAccountData(accountTo, accountTo.balance().add(transactionData.amount())));
+        Thread.sleep(10000);
         transactionRepository.addTransaction(updateTransactionData(transactionData, TransactionStatus.SUCCESS));
     }
 
-    private static void validateBallance(TransactionData transactionData, AccountData accountFrom) throws NotEnoughBalanceException {
+    private static void validateBalance(TransactionData transactionData, AccountData accountFrom) throws NotEnoughBalanceException {
         if (!(accountFrom.balance().compareTo(transactionData.amount()) >= 0)) {
             log.warn("Transaction={} rejected, reason={}", transactionData, NOT_ENOUGH_BALANCE.getMessage());
             throw new NotEnoughBalanceException(NOT_ENOUGH_BALANCE.getMessage());
