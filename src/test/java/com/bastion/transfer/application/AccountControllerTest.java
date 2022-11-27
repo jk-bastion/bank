@@ -92,7 +92,7 @@ class AccountControllerTest {
     @Test
     void shouldGetAccount() throws Exception {
 
-        given(manageAccount.findAccountById(1l)).willReturn(getAccountData());
+        given(manageAccount.findAccountById(ACCOUNT_ID)).willReturn(getAccountData());
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/api/v1/accounts/{accountId}/", ACCOUNT_ID))
