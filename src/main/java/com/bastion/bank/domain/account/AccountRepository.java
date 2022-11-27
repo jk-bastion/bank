@@ -11,5 +11,5 @@ public interface AccountRepository {
     List<AccountData> getAllAccounts();
     AccountData findAccountById(Long accountId);
     void deleteAccount(Long accountId);
-    void updateAccountBalance(AccountData accountDao) throws AccountUpdateException;
+    void updateAccount(AccountData accountDao) throws AccountUpdateException;
 }

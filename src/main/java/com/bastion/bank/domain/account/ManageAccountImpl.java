@@ -43,7 +43,7 @@ public class ManageAccountImpl implements ManageAccount {
     @Override
     public void updateAccountBalance(AccountData accountData) throws AccountNotExistsException, AccountUpdateException {
         try {
-            accountRepository.updateAccountBalance(accountData);
+            accountRepository.updateAccount(accountData);
         } catch (Exception exception) {
             throw new AccountUpdateException(ACCOUNT_UPDATE_FAILED.getMessage());
         }

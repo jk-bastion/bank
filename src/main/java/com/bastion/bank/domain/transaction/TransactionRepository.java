@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface TransactionRepository {
 
-    TransactionData addTransaction(AccountData accountFrom, AccountData accountTo, TransactionData transactionData) throws NotEnoughBalanceException;
-
     void addTransaction(TransactionData transactionData);
 
     List<TransactionData> getTransactionsForAccount(Long accountId);

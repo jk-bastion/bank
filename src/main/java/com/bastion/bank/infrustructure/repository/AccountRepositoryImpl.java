@@ -26,7 +26,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public void updateAccountBalance(AccountData accountData) {
+    public void updateAccount(AccountData accountData) {
         jpaRepository.save(mapper.mapToEntity(accountData));
     }
 

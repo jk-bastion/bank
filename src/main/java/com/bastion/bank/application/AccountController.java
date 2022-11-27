@@ -38,8 +38,8 @@ public class AccountController {
     }
 
     @GetMapping(value = "/accounts/{accountId}/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AccountDto getAccount(@RequestParam("accountId") String accountId) throws AccountNotExistsException {
-        return mapToAccountDto(manageAccount.findAccountById(Long.parseLong(accountId)));
+    public AccountDto getAccount(@PathVariable("accountId") Long accountId) throws AccountNotExistsException {
+        return mapToAccountDto(manageAccount.findAccountById(accountId));
     }
 
     @GetMapping(value = "/accounts/", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -51,10 +51,11 @@ public class AccountController {
 
     @DeleteMapping("/accounts/{accountId}/")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAccount(@RequestParam("accountId") String accountId) throws AccountNotExistsException {
-        manageAccount.deleteAccount(Long.parseLong(accountId));
+    public void deleteAccount(@PathVariable("accountId") Long accountId) throws AccountNotExistsException {
+        manageAccount.deleteAccount(accountId);
     }
 
+    //TODO : mappper
     private static AccountData mapToAccountData(AccountDto accountDto) {
         return AccountData.builder()
                 .email(accountDto.email)

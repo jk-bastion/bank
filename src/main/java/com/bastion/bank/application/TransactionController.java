@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +29,7 @@ public class TransactionController {
     }
 
     @GetMapping(value = "/accounts/{accountId}/transactions/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<TransactionDto> getTransactionsForAccount(@RequestParam("accountId") String accountId) throws AccountNotExistsException {
+    public List<TransactionDto> getTransactionsForAccount(@PathVariable("accountId") String accountId) throws AccountNotExistsException {
         return transactionServer.getTransactionsForAccount(Long.parseLong(accountId)).stream()
                 .map(this::mapToTransactionDto)
                 .collect(Collectors.toList());

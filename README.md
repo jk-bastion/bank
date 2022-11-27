@@ -90,7 +90,8 @@ POST  http://localhost:8080/api/v1/account/transaction
     "fromAccountId": 1,
     "toAccountId": 2,
     "amount": "2",
-    "currencyCode": "usd"
+    "currencyCode": "usd",
+    "message" : "transfer title 1"
 }
 ````
 Response
