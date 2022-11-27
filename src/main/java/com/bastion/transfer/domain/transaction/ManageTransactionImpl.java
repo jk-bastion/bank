@@ -10,8 +10,8 @@ import com.bastion.transfer.domain.transaction.model.TransactionStatus;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.Instant;
@@ -28,7 +28,7 @@ public class ManageTransactionImpl implements ManageTransaction {
     private final AccountRepository accountRepository;
 
     @Override
-    @Transactional(Transactional.TxType.REQUIRED)
+    @Transactional()
     public void addTransaction(final TransactionData transactionData) throws Exception {
         var accountFrom = getAccountData(transactionData.fromAccountId(), transactionData);
         var accountTo = getAccountData(transactionData.toAccountId(), transactionData);
