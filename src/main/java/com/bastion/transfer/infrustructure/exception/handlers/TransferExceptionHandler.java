@@ -8,6 +8,7 @@ import com.bastion.transfer.domain.transaction.exception.NotEnoughBalanceExcepti
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.exception.LockAcquisitionException;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ public class TransferExceptionHandler extends ResponseEntityExceptionHandler {
     private static final String ACCOUNT_BALANCE_UPDATE = "1030";
     private static final String ACCOUNT_CREATION = "1040";
     private static final String ACCOUNT_NOT_EXISTS = "1020";
+    private static final String LOCK_AQUIRED = "1050";
 
     @ExceptionHandler(AccountCreationException.class)
     public final ResponseEntity<ApiErrorsResponse> handleAccountCreationException(AccountCreationException ex) {
@@ -53,6 +55,12 @@ public class TransferExceptionHandler extends ResponseEntityExceptionHandler {
     public final ResponseEntity<ApiErrorsResponse> handleAccountBalanceUpdateException(AccountUpdateException ex) {
         return new ResponseEntity<>(new ApiErrorsResponse(List.of(new ApiError(ACCOUNT_BALANCE_UPDATE, ex.getMessage()))), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(LockAcquisitionException.class)
+    public final ResponseEntity<ApiErrorsResponse> handleLockAcquisitionException(LockAcquisitionException ex) {
+        return new ResponseEntity<>(new ApiErrorsResponse(List.of(new ApiError(LOCK_AQUIRED, ex.getMessage()))), HttpStatus.CONFLICT);
+    }
+
 
     @Data
     @AllArgsConstructor

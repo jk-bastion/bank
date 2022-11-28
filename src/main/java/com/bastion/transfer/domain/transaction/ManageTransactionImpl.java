@@ -10,6 +10,8 @@ import com.bastion.transfer.domain.transaction.model.TransactionStatus;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -28,8 +30,9 @@ public class ManageTransactionImpl implements ManageTransaction {
     private final AccountRepository accountRepository;
 
     @Override
-    @Transactional()
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public void addTransaction(final TransactionData transactionData) throws Exception {
+        log.info("start transfer {}", transactionData);
         var accountFrom = getAccountData(transactionData.fromAccountId(), transactionData);
         var accountTo = getAccountData(transactionData.toAccountId(), transactionData);
 
@@ -38,7 +41,9 @@ public class ManageTransactionImpl implements ManageTransaction {
 
         accountRepository.updateAccount(updateAccountData(accountFrom, accountFrom.balance().subtract(transactionData.amount())));
         accountRepository.updateAccount(updateAccountData(accountTo, accountTo.balance().add(transactionData.amount())));
+//        Thread.sleep(20000);
         transactionRepository.addTransaction(updateTransactionData(transactionData, TransactionStatus.SUCCESS));
+        log.info("transfer succeeded");
     }
 
     private static void validateBalance(TransactionData transactionData, AccountData accountFrom) throws NotEnoughBalanceException {
