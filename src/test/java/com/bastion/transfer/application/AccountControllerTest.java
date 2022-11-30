@@ -1,6 +1,7 @@
 package com.bastion.transfer.application;
 
 import com.bastion.transfer.domain.account.ManageAccount;
+import com.bastion.transfer.domain.account.exception.AccountNotExistsException;
 import com.bastion.transfer.domain.account.model.AccountData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.bastion.transfer.domain.transaction.model.ErrorsCode.ACCOUNT_NOT_EXISTS;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AccountController.class)
@@ -23,6 +26,8 @@ class AccountControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private AccountController accountController;
     @MockBean
     private ManageAccount manageAccount;
 
@@ -138,6 +143,18 @@ class AccountControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/api/v1/accounts/{accountId}/", ACCOUNT_ID))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenGetAccountAndAccountDoesNotExist() throws Exception {
+
+        doThrow(new AccountNotExistsException(ACCOUNT_NOT_EXISTS.getMessage())).when(manageAccount).findAccountById(ACCOUNT_ID);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/v1/accounts/{accountId}/", ACCOUNT_ID))
+                .andExpect(status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].code").value("1020"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].message").value("account does not exist"));
     }
 
     private AccountData getAccountData() {

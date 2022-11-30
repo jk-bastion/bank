@@ -32,7 +32,7 @@ public class ManageTransactionImpl implements ManageTransaction {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public void addTransaction(final TransactionData transactionData) throws Exception {
-        log.info("start transfer {}", transactionData);
+        log.info("start transfers {}", transactionData);
         var accountFrom = getAccountData(transactionData.fromAccountId(), transactionData);
         var accountTo = getAccountData(transactionData.toAccountId(), transactionData);
 
@@ -41,9 +41,9 @@ public class ManageTransactionImpl implements ManageTransaction {
 
         accountRepository.updateAccount(updateAccountData(accountFrom, accountFrom.balance().subtract(transactionData.amount())));
         accountRepository.updateAccount(updateAccountData(accountTo, accountTo.balance().add(transactionData.amount())));
-//        Thread.sleep(20000);
+        Thread.sleep(10000);
         transactionRepository.addTransaction(updateTransactionData(transactionData, TransactionStatus.SUCCESS));
-        log.info("transfer succeeded");
+        log.info("transfer ends ");
     }
 
     private static void validateBalance(TransactionData transactionData, AccountData accountFrom) throws NotEnoughBalanceException {

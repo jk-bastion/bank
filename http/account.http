@@ -3,8 +3,8 @@ POST http://localhost:8082/api/v1/accounts/
 Content-Type: application/json
 
 {
-  "username": "testusername2",
-  "email": "testemail2@gop.com",
+  "username": "testusername1",
+  "email": "testemail1@gop.com",
   "balance": 20,
   "currencyCode": "usd"
 }
@@ -22,7 +22,7 @@ Content-Type: application/json
 }
 
 ### GET ACCOUNT
-GET http://localhost:8082/api/v1/accounts/1/
+GET http://localhost:8082/api/v1/accounts/2/
 
 ### GET ALL ACCOUNTS
 GET http://localhost:8082/api/v1/accounts/
@@ -31,12 +31,23 @@ GET http://localhost:8082/api/v1/accounts/
 GET http://localhost:8082/api/v1/accounts/1/transactions/
 
 ### CREATE TRANSACTIONS
-POST  http://localhost:8082/api/v1/accounts/1/transactions/
+POST  http://localhost:8082/api/v1/accounts/2/transactions/
 Content-Type: application/json
 
 {
-    "toAccountId": 2,
-    "amount": "10",
+    "toAccountId": 1,
+    "amount": "40",
     "currencyCode": "usd",
-    "message" : "transfer title 1"
+    "message" : "transfer title 80 second"
+}
+
+### CREATE TRANSACTIONS
+POST  http://localhost:8082/api/v1/accounts/2/transactions/
+Content-Type: application/json
+
+{
+  "toAccountId": 1,
+  "amount": "40",
+  "currencyCode": "usd",
+  "message" : "transfer title 80 first"
 }

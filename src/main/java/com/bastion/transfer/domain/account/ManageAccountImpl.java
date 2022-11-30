@@ -6,6 +6,7 @@ import com.bastion.transfer.domain.account.exception.AccountNotExistsException;
 import com.bastion.transfer.domain.account.model.AccountData;
 import com.bastion.transfer.domain.transaction.model.ErrorsCode;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 import static com.bastion.transfer.domain.transaction.model.ErrorsCode.ACCOUNT_NOT_EXISTS;
 import static com.bastion.transfer.domain.transaction.model.ErrorsCode.ACCOUNT_UPDATE_FAILED;
 
-
+@Slf4j
 @Service
 @AllArgsConstructor
 public class ManageAccountImpl implements ManageAccount {

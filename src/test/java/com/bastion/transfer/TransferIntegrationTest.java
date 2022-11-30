@@ -8,6 +8,7 @@ import com.bastion.transfer.domain.transaction.model.ErrorsCode;
 import com.bastion.transfer.domain.transaction.model.TransactionData;
 import com.bastion.transfer.domain.transaction.model.TransactionStatus;
 import org.assertj.core.api.Assertions;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.concurrent.*;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -83,7 +86,7 @@ public class TransferIntegrationTest {
                 .build());
         var amount = BALANCE.add(BigDecimal.ONE);
 
-        // when _&&  then
+        // when &&  then
         var statusRuntimeException = assertThrows(NotEnoughBalanceException.class, () ->
                 manageTransaction.addTransaction(TransactionData.builder()
                         .fromAccountId(accountFrom.accountId())
@@ -96,6 +99,65 @@ public class TransferIntegrationTest {
 
         assertThat(manageAccount.findAccountById(accountFrom.accountId()).balance()).isEqualTo(BALANCE);
         assertThat(manageAccount.findAccountById(accountTo.accountId()).balance()).isEqualTo(BALANCE);
+    }
+
+    @Test
+    void transactionShouldFailedWhenTwoTransactionHapendedAtTheSameTime() throws Exception {
+        // given
+        var accountFrom = manageAccount.createAccount(getAccountData());
+        var accountTo = manageAccount.createAccount(AccountData.builder()
+                .email("email2")
+                .balance(BALANCE)
+                .username("username2")
+                .currencyCode(CURRENCY_CODE)
+                .build());
+        var amount = BALANCE;
+
+        // when &&  then
+        var executorService = Executors.newFixedThreadPool(2);
+        Callable<Void> callable1 = () -> {
+            manageTransaction.addTransaction(TransactionData.builder()
+                    .fromAccountId(accountFrom.accountId())
+                    .toAccountId(accountTo.accountId())
+                    .message("message 1")
+                    .currencyCode(CURRENCY_CODE)
+                    .amount(amount)
+                    .build());
+            return null;
+        };
+
+        Callable<Void> callable2 = () -> {
+            manageTransaction.addTransaction(TransactionData.builder()
+                    .fromAccountId(accountFrom.accountId())
+                    .toAccountId(accountTo.accountId())
+                    .message("message 2")
+                    .currencyCode(CURRENCY_CODE)
+                    .amount(amount)
+                    .build());
+            return null;
+        };
+
+        try {
+
+            List<Future<Void>> futures = executorService.invokeAll(List.of(callable1, callable2));
+                 futures.get(0);
+                 futures.get(1);
+
+        }   catch (Exception e) {
+            Assert.fail();
+        }
+
+        executorService.shutdown();
+        try {
+            if (!executorService.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+                executorService.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executorService.shutdownNow();
+        }
+
+        assertThat(manageAccount.findAccountById(accountFrom.accountId()).balance()).isEqualTo(BALANCE.subtract(amount));
+        assertThat(manageAccount.findAccountById(accountTo.accountId()).balance()).isEqualTo(BALANCE.add(amount));
     }
 
     private AccountData getAccountData() {

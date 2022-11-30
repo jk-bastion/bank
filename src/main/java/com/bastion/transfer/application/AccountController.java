@@ -44,6 +44,7 @@ public class AccountController {
     @GetMapping(value = "/accounts/{accountId}/", produces = MediaType.APPLICATION_JSON_VALUE)
     public AccountDto getAccount(@PathVariable("accountId") Long accountId) throws AccountNotExistsException {
         log.info("Retrieve account for accountId={}", accountId);
+
         return mapToAccountDto(manageAccount.findAccountById(accountId));
     }
 
